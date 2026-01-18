@@ -1,0 +1,33 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WorkName.ProductPage"
+             BackgroundColor="White"
+             Title="Szczegóły produktu">
+
+	<ScrollView>
+		<VerticalStackLayout Padding="20" Spacing="15">
+
+			<Image x:Name="ProductImage" HeightRequest="250" Aspect="AspectFit" />
+			<Label x:Name="ProductNameLabel" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+			<Label x:Name="ColorwayLabel" FontSize="14" TextColor="Gray" HorizontalOptions="Center" />
+
+			<Line HeightRequest="1" BackgroundColor="#E0E0E0" />
+
+			<Label Text="Wybierz rozmiar (US):" FontAttributes="Bold" />
+			<FlexLayout x:Name="SizesContainer" Wrap="Wrap" JustifyContent="Start" />
+
+			<Border Padding="15" StrokeShape="RoundRectangle 12" BackgroundColor="#F8F8F8">
+				<HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+					<Label Text="Najniższa cena:" VerticalOptions="Center" />
+					<Label x:Name="LowestPriceLabel" FontSize="22" FontAttributes="Bold" TextColor="#2E7D32" />
+				</HorizontalStackLayout>
+			</Border>
+
+			<Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+				<Button Grid.Column="0" Text="Złóż ofertę" Clicked="OnMakeOfferClicked" BackgroundColor="White" BorderWidth="1" BorderColor="Black" TextColor="Black" />
+				<Button Grid.Column="1" Text="Dodaj do koszyka" Clicked="OnAddToCartClicked" BackgroundColor="Black" TextColor="White" />
+			</Grid>
+
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>

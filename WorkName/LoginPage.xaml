@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WorkName.LoginPage"
+             BackgroundColor="White">
+
+    <VerticalStackLayout Spacing="25" Padding="30" VerticalOptions="Center">
+
+        <Image Source="dotnet_bot.png" HeightRequest="150" HorizontalOptions="Center" />
+
+        <Label Text="Witaj w SneakerMarket" 
+               FontSize="28" FontAttributes="Bold" 
+               HorizontalOptions="Center" TextColor="Black" />
+
+        <VerticalStackLayout Spacing="10">
+            <Label Text="Nazwa użytkownika / Email" TextColor="Gray" Margin="5,0" />
+            <Border StrokeShape="RoundRectangle 12" StrokeThickness="1" Stroke="#E0E0E0" Padding="5">
+                <Entry x:Name="UserEntry" Placeholder="np. sneakerhead@pl.com" 
+                       TextColor="Black" PlaceholderColor="Silver" HeightRequest="50" />
+            </Border>
+            <Label Text="Hasło" TextColor="Gray" Margin="5,0" />
+            <Border StrokeShape="RoundRectangle 12" StrokeThickness="1" Stroke="#E0E0E0" Padding="5">
+                <Entry x:Name="PasswordEntry" Placeholder="********" IsPassword="True"
+           TextColor="Black" PlaceholderColor="Silver" HeightRequest="50" />
+            </Border>
+        </VerticalStackLayout>
+
+        <Button Text="Zaloguj się" 
+                Clicked="OnLoginClicked"
+                BackgroundColor="Black" TextColor="White" 
+                HeightRequest="55" CornerRadius="12" FontAttributes="Bold" />
+        <Button Text="Zarejestruj się" 
+        Clicked="OnRegisterClicked"
+        BackgroundColor="Black" TextColor="White" 
+        HeightRequest="55" CornerRadius="12" FontAttributes="Bold" />
+
+    </VerticalStackLayout>
+</ContentPage>
