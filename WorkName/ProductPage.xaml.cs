@@ -6,14 +6,17 @@ using System.Linq;
 using System.Text;
 using WorkName.Models;
 using System.Threading.Tasks;
+using WorkName.Services;
 
 namespace WorkName
 {
     public partial class ProductPage : ContentPage
     {
         private Product _product;
-        private string _selectedSize;
+        private string? _selectedSize;
+        private readonly DatabaseService _databaseService = new DatabaseService();
 
+        List<Listings> ProductListings = new();
         public ProductPage(Product product)
         {
             InitializeComponent();
@@ -28,29 +31,61 @@ namespace WorkName
                 DisplayAlert("Błąd strony", ex.Message, "OK");
             }
         }
-
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await RefreshData();
+        }
         private void LoadProductData()
         {
             ProductNameLabel.Text = _product.nazwa_modelu;
             ColorwayLabel.Text = _product.kolorystyka;
-            ProductImage.Source = "dotnet_bot.png"; // Dynamicznie: _product.image_url
+            ProductImage.Source = "dotnet_bot.png";
 
-            // Generowanie przycisków rozmiarów
-            string[] sizes = { "7", "8", "9", "10", "11", "12" };
-            foreach (var size in sizes)
-            {
-                var btn = new Button { Text = size, WidthRequest = 60, Margin = 5, BackgroundColor = Color.FromArgb("#EEE") };
-                btn.Clicked += (s, e) => SelectSize(size);
-                SizesContainer.Children.Add(btn);
-            }
         }
 
-        private async void SelectSize(string size)
+        private async void OnSizeClicked(object sender, EventArgs e)
         {
-            _selectedSize = size;
-            // Tutaj pobierasz z bazy najtańszą ofertę dla tego rozmiaru
-            LowestPriceLabel.Text = "$1250";
+            var clickedButton = (Button)sender;
 
+            // Reseting buttons colors to primary
+            foreach (var child in SizesLayout.Children)
+            {
+                if (child is Button btn)
+                {
+                    btn.BackgroundColor = Colors.White;
+                    btn.TextColor = Colors.Black;
+                }
+            }
+
+            // backlight
+            clickedButton.BackgroundColor = Colors.Black;
+            clickedButton.TextColor = Colors.White;
+
+            _selectedSize = clickedButton.Text;
+            await RefreshData();
+        }
+        private async Task RefreshData()
+        {
+            ProductListings = await _databaseService.GetListingsByProductIdAsync(_product.product_id);
+
+            if (!string.IsNullOrEmpty(_selectedSize))
+            {
+                FilterListingsBySize(_selectedSize);
+            }
+        }
+        private void FilterListingsBySize(string size)
+        {
+            var expected = $"US {size}".Trim();
+
+
+            ProductsListView.ItemsSource = ProductListings
+                .Where(l => string.Equals(
+                    l.rozmiar?.Trim(),
+                    expected,
+                    StringComparison.OrdinalIgnoreCase))
+                .OrderBy(l => l.cena_oferowana)
+                .ToList();
         }
         private async void OnMakeOfferClicked(object sender, EventArgs e)
         {
@@ -59,6 +94,11 @@ namespace WorkName
         private async void OnAddToCartClicked(object sender, EventArgs e)
         {
             await DisplayAlert("Koszyk", "Produkt został dodany do koszyka!", "OK");
+        }
+
+        private async void OnListingSelected(object sender, EventArgs e)
+        {
+
         }
     }
 }

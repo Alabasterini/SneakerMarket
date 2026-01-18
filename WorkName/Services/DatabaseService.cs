@@ -126,14 +126,15 @@ namespace WorkName.Services
                 User.username, User.email, User.password,User.data_rejestracji, User.rola);
         }
 
-        public async Task<List<Listings>> GetListingsAsync()
+        /*public async Task<List<Listings>> GetListingsAsync()
         {
             await Init();
             var resultSet = await _dbClient.Execute("SELECT * FROM Listings");
 
             var listings = new List<Listings>();
 
-            foreach(var row in resultSet.Rows){
+            foreach (var row in resultSet.Rows)
+            {
                 var cols = row.ToArray();
                 var idListingValue = cols[0];
                 var idProductValue = cols[1];
@@ -173,6 +174,67 @@ namespace WorkName.Services
                 {
                     listing_id = listingId,
                     product_id = productId,
+                    user_id = userId,
+                    rozmiar = cols[3].ToString(),
+                    cena_oferowana = cena,
+                    stan = cols[5].ToString(),
+                    status = cols[6].ToString()
+                });
+            }
+
+
+            return listings;
+        }*/
+
+        public async Task<List<Listings>> GetListingsByProductIdAsync(int productId)
+        {
+
+            await Init();
+            var resultSet = await _dbClient.Execute("SELECT * FROM Listings WHERE product_id = ? AND status = 'Aktywna'", productId);
+
+            var listings = new List<Listings>();
+
+            foreach (var row in resultSet.Rows)
+            {
+                var cols = row.ToArray();
+                var idListingValue = cols[0];
+                var idProductValue = cols[1];
+                var idUserValue = cols[2];
+                var idPriceValue = cols[4];
+
+                int listingId = idListingValue switch
+                {
+                    Libsql.Client.Integer i => i.Value,
+                    null => 0,
+                    _ => int.Parse(idListingValue.ToString() ?? "0")
+                };
+
+                int product_Id = idProductValue switch
+                {
+                    Libsql.Client.Integer i => i.Value,
+                    null => 0,
+                    _ => int.Parse(idProductValue.ToString() ?? "0")
+                };
+
+                int userId = idUserValue switch
+                {
+                    Libsql.Client.Integer i => i.Value,
+                    null => 0,
+                    _ => int.Parse(idUserValue.ToString() ?? "0")
+                };
+
+                decimal cena = idPriceValue switch
+                {
+                    Libsql.Client.Real r => Convert.ToDecimal(r.Value),
+                    Libsql.Client.Integer i => Convert.ToDecimal(i.Value),
+                    null => 0m,
+                    _ => decimal.TryParse(idPriceValue?.ToString(), out var d) ? d : 0m
+                };
+
+                listings.Add(new Listings
+                {
+                    listing_id = listingId,
+                    product_id = product_Id,
                     user_id = userId,
                     rozmiar = cols[3].ToString(),
                     cena_oferowana = cena,
