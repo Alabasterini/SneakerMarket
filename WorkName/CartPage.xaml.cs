@@ -11,17 +11,17 @@ namespace WorkName
     public partial class CartPage : ContentPage
     {
         private readonly DatabaseService _databaseService = new DatabaseService();
-        //ctor for initializing component and showing TotalCartValue
+        //ctor for initializing component
         public CartPage()
         {
             InitializeComponent();
-            TotalCartValue.Text = TotalValue().ToString();
         }
         private static List<CartItems> _cartItems = CartService.CartItems;
-        protected override async void OnAppearing()
+
+        protected override void OnAppearing()
         {
             base.OnAppearing();
-            CartListView.ItemsSource = _cartItems;
+            RefreshView();
         }
         //Method for payment 
         //Wont be implemented
@@ -30,14 +30,38 @@ namespace WorkName
             await DisplayAlert("Płatność", "Przechodzenie do wyboru metody płatności", "OK");
         }
         //method for calculating total cart value
-        private static decimal TotalValue()
+        private static string TotalValue()
         {
+
             decimal value = 0;
-            foreach(CartItems items in _cartItems)
+            foreach (CartItems items in _cartItems)
             {
                 value += items.cena_oferowana;
             }
-            return value;
+            string valueString = $"{value} USD";
+            return valueString;
+        }
+        //method for removing item from cart
+        private async void OnRemoveFromCartClicked(object sender, EventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null) return;
+
+            var itemToDelete = button.BindingContext as CartItems;
+            if (itemToDelete == null) return;
+
+            CartService.RemoveFromCart(itemToDelete);
+            RefreshView();
+        }
+        //method for refreshing cart view
+        private void RefreshView()
+        {
+
+            CartListView.ItemsSource = null;
+            CartListView.ItemsSource = CartService.CartItems;
+
+
+            TotalCartValue.Text = TotalValue();
         }
     }
 }

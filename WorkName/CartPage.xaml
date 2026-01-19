@@ -26,7 +26,7 @@
                                 <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
                             </Border.Shadow>
 
-                            <Grid ColumnDefinitions="50, *, Auto, Auto" ColumnSpacing="10">
+                            <Grid ColumnDefinitions="50, *, Auto, Auto, Auto" ColumnSpacing="10">
 
                                 <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                     <Label Text="Stan" FontSize="10" TextColor="#9E9E9E" HorizontalOptions="Center"/>
@@ -72,7 +72,18 @@
                                        TextColor="#2E7D32" 
                                        VerticalOptions="Center" 
                                        HorizontalTextAlignment="End"/>
-
+                                
+                                <Button Grid.Column="4"
+                                        Text="X"
+                                        TextColor="White"
+                                        BackgroundColor="#D32F2F" 
+                                        FontAttributes="Bold"
+                                        CornerRadius="8"
+                                        HeightRequest="35"
+                                        WidthRequest="35"
+                                        Padding="0"
+                                        VerticalOptions="Center"
+                                        Clicked="OnRemoveFromCartClicked"/>
                             </Grid>
                         </Border>
                     </DataTemplate>
