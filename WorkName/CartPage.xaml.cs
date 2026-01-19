@@ -27,7 +27,15 @@ namespace WorkName
         //Wont be implemented
         private async void OnPayClicked(object sender, EventArgs e)
         {
+            List<CartItems> itemsToRemove = new();
+            foreach (Listings item in CartService.CartListings)
+            {
+                await _databaseService.RemoveListingAndCreateOrderAsync(item, CartService.loggedUser);
+            }
+            CartService.ClearCart();
+
             await DisplayAlert("Płatność", "Przechodzenie do wyboru metody płatności", "OK");
+            RefreshView();
         }
         //method for calculating total cart value
         private static string TotalValue()
@@ -42,7 +50,7 @@ namespace WorkName
             return valueString;
         }
         //method for removing item from cart
-        private async void OnRemoveFromCartClicked(object sender, EventArgs e)
+        private  void OnRemoveFromCartClicked(object sender, EventArgs e)
         {
             var button = sender as Button;
             if (button == null) return;

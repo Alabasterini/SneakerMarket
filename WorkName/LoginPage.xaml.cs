@@ -35,7 +35,11 @@ public partial class LoginPage : ContentPage
             //checking for admin
             bool isAdmin = foundUser.rola == "admin";
             if(foundUser.password == password)
-                await Navigation.PushAsync(new MainPage(isAdmin)); 
+            { await Navigation.PushAsync(new MainPage(isAdmin));
+                CartService.loggedUser = foundUser;
+            }
+                
+            
             else await DisplayAlert("Błąd", "Błedne hasło!", "OK");
         }
         else

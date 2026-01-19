@@ -66,9 +66,9 @@ namespace WorkName.Services
                 {
                     product_id = productId,
                     brand_id = brandId,
-                    nazwa_modelu = cols[2]?.ToString(),
-                    kolorystyka = cols[3]?.ToString(),
-                    data_premiery = cols[4]?.ToString(),
+                    nazwa_modelu = cols[2]?.ToString() ?? string.Empty,
+                    kolorystyka = cols[3]?.ToString() ?? string.Empty,
+                    data_premiery = cols[4]?.ToString() ?? string.Empty,
                     cena_retail = cena_retail
                 });
             }
@@ -107,11 +107,11 @@ namespace WorkName.Services
                 users.Add(new Users
                 {
                     user_id = userId,
-                    username = cols[1]?.ToString(),
-                    email = cols[2]?.ToString(),
-                    password = cols[3]?.ToString(),
-                    data_rejestracji = cols[4]?.ToString(),
-                    rola = cols[5]?.ToString()
+                    username = cols[1]?.ToString() ?? string.Empty,
+                    email = cols[2]?.ToString() ?? string.Empty,
+                    password = cols[3]?.ToString() ?? string.Empty,
+                    data_rejestracji = cols[4]?.ToString() ?? string.Empty,
+                    rola = cols[5]?.ToString() ?? string.Empty
                 });
             }
             return users;
@@ -185,7 +185,33 @@ namespace WorkName.Services
 
             return listings;
         }*/
+        public async Task RemoveListingAndCreateOrderAsync(Listings listing, Users user)
+        {
+            await Init();
 
+            await _dbClient.Execute("BEGIN");
+
+            try
+            {
+                double prowizjaDlaBazy = (double)(listing.cena_oferowana / 10m);
+                await _dbClient.Execute(
+                    "INSERT INTO Orders (listing_id, kupujacy_id, data_sprzedazy, prowizja_platformy, status_weryfikacji) VALUES (?, ?, ?, ?, ?)",
+                    listing.listing_id,
+                    user.user_id,
+                    DateTime.Now.ToString("yyyy-MM-dd"),
+                    prowizjaDlaBazy,
+                    "Zweryfikowano");
+
+                await _dbClient.Execute("UPDATE Listings SET status = 'Sprzedana' WHERE listing_id = ?", listing.listing_id);
+
+                await _dbClient.Execute("COMMIT");
+            }
+            catch
+            {
+                await _dbClient.Execute("ROLLBACK");
+                throw;
+            }
+        }
         public async Task<List<Listings>> GetListingsByProductIdAsync(int productId)
         {
 
@@ -236,10 +262,10 @@ namespace WorkName.Services
                     listing_id = listingId,
                     product_id = product_Id,
                     user_id = userId,
-                    rozmiar = cols[3].ToString(),
+                    rozmiar = cols[3].ToString() ?? string.Empty,
                     cena_oferowana = cena,
-                    stan = cols[5].ToString(),
-                    status = cols[6].ToString()
+                    stan = cols[5].ToString() ?? string.Empty,
+                    status = cols[6].ToString() ?? string.Empty
                 });
             }
 

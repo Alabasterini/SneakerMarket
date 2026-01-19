@@ -11,7 +11,10 @@ namespace WorkName.Services
 {
     public static class CartService
     {
+        public static Users loggedUser = new Users();
         public static List<CartItems> CartItems { get; private set; } = new();
+
+        public static List<Listings> CartListings { get; set; } = new();
         //method for adding items to cart
         public static int AddToCart(Listings listing, Product product)
         {
@@ -38,6 +41,7 @@ namespace WorkName.Services
             // returns 0 if succes -1 if listing is already in cart
             if (!CartItems.Contains(item))
             {
+                CartListings.Add(listing);
                 CartItems.Add(item);
                 return 0;
             }
@@ -49,6 +53,7 @@ namespace WorkName.Services
             CartItems.Clear();
         }
 
+        //simple method for removing from cart
         public static void RemoveFromCart(CartItems itemToDelete)
         {
             CartItems.Remove(itemToDelete);

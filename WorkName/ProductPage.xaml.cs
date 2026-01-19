@@ -16,7 +16,7 @@ namespace WorkName
         private string? _selectedSize;
         private readonly DatabaseService _databaseService = new DatabaseService();
 
-        private Listings _selectedListing = null;
+        private Listings ?_selectedListing = null;
         private bool _cartLock = false;
 
         List<Listings> ProductListings = new();
@@ -45,6 +45,7 @@ namespace WorkName
             ProductImage.Source = "dotnet_bot.png";
 
         }
+
 
         //Method for showing Listings when size is clicked
         private async void OnSizeClicked(object sender, EventArgs e)
@@ -93,7 +94,7 @@ namespace WorkName
                 .OrderBy(l => l.cena_oferowana)
                 .ToList();
         }
-        private async void OnMakeOfferClicked(object sender, EventArgs e)
+        private  void OnMakeOfferClicked(object sender, EventArgs e)
         {
 
         }
@@ -101,9 +102,9 @@ namespace WorkName
         private async void OnAddToCartClicked(object sender, EventArgs e)
         {
             //checking is there any selection
-            if (_cartLock) {
-                if(CartService.AddToCart(_selectedListing, _product) == 0) { 
-                await DisplayAlert("Koszyk", "Produkt został dodany do koszyka!", "OK");
+            if (_cartLock && _selectedListing != null) {
+                if (CartService.AddToCart(_selectedListing, _product) == 0) { 
+                    await DisplayAlert("Koszyk", "Produkt został dodany do koszyka!", "OK");
                 }
                 else await DisplayAlert("Koszyk", "Produkt już jest w koszyku!", "OK");
                 ProductsListView.SelectedItem = null;
@@ -113,7 +114,7 @@ namespace WorkName
             
         }
 
-        private async void OnListingSelected(object sender, SelectionChangedEventArgs e)
+        private void OnListingSelected(object sender, SelectionChangedEventArgs e)
         {
             var selected = e.CurrentSelection.FirstOrDefault() as Listings;
 
