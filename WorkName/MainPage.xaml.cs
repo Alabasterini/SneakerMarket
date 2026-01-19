@@ -123,8 +123,9 @@ namespace WorkName
         // method for getting into cart
         private async void OnCartClicked(object sender, EventArgs e)
         {
-            
+           if(CartService.CartItems.Count==0) 
             await DisplayAlert("Koszyk", "Twój koszyk jest obecnie pusty.", "OK");
+           else await Navigation.PushAsync(new CartPage());
         }
     }
 }

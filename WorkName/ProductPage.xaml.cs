@@ -16,7 +16,12 @@ namespace WorkName
         private string? _selectedSize;
         private readonly DatabaseService _databaseService = new DatabaseService();
 
+        private Listings _selectedListing = null;
+        private bool _cartLock = false;
+
         List<Listings> ProductListings = new();
+
+        // ProductPage ctor
         public ProductPage(Product product)
         {
             InitializeComponent();
@@ -31,11 +36,8 @@ namespace WorkName
                 DisplayAlert("Błąd strony", ex.Message, "OK");
             }
         }
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-            await RefreshData();
-        }
+
+        //Method for loading specified product data
         private void LoadProductData()
         {
             ProductNameLabel.Text = _product.nazwa_modelu;
@@ -44,6 +46,7 @@ namespace WorkName
 
         }
 
+        //Method for showing Listings when size is clicked
         private async void OnSizeClicked(object sender, EventArgs e)
         {
             var clickedButton = (Button)sender;
@@ -65,6 +68,7 @@ namespace WorkName
             _selectedSize = clickedButton.Text;
             await RefreshData();
         }
+        //asynchronous task refreshing data by selected size
         private async Task RefreshData()
         {
             ProductListings = await _databaseService.GetListingsByProductIdAsync(_product.product_id);
@@ -74,6 +78,8 @@ namespace WorkName
                 FilterListingsBySize(_selectedSize);
             }
         }
+
+        //Method for updating listView by selected size
         private void FilterListingsBySize(string size)
         {
             var expected = $"US {size}".Trim();
@@ -91,14 +97,29 @@ namespace WorkName
         {
 
         }
+        //Method for adding selected listing to cart
         private async void OnAddToCartClicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Koszyk", "Produkt został dodany do koszyka!", "OK");
+            //checking is there any selection
+            if (_cartLock) {
+                if(CartService.AddToCart(_selectedListing, _product) == 0) { 
+                await DisplayAlert("Koszyk", "Produkt został dodany do koszyka!", "OK");
+                }
+                else await DisplayAlert("Koszyk", "Produkt już jest w koszyku!", "OK");
+                ProductsListView.SelectedItem = null;
+                _selectedListing = null;
+                _cartLock = false;
+            }
+            
         }
 
-        private async void OnListingSelected(object sender, EventArgs e)
+        private async void OnListingSelected(object sender, SelectionChangedEventArgs e)
         {
+            var selected = e.CurrentSelection.FirstOrDefault() as Listings;
 
+            _selectedListing = selected;
+
+            _cartLock = true;
         }
     }
 }

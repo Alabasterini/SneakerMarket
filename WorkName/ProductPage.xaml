@@ -4,7 +4,7 @@
              x:Class="WorkName.ProductPage"
              BackgroundColor="White"
              Title="Szczegóły produktu">
-
+	
 	<ScrollView>
 		<VerticalStackLayout Padding="20" Spacing="15">
 
@@ -49,6 +49,23 @@
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="model:Listings">
 							<Border StrokeShape="RoundRectangle 10" StrokeThickness="1" Stroke="#E0E0E0" BackgroundColor="White" Padding="15">
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="CommonStates">
+										<VisualState x:Name="Normal">
+											<VisualState.Setters>
+												<Setter Property="BackgroundColor" Value="White" />
+												<Setter Property="Stroke" Value="#E0E0E0" />
+											</VisualState.Setters>
+										</VisualState>
+
+										<VisualState x:Name="Selected">
+											<VisualState.Setters>
+												<Setter Property="BackgroundColor" Value="LightSkyBlue" />
+												<Setter Property="Stroke" Value="Blue" />
+											</VisualState.Setters>
+										</VisualState>
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
 								<Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="15">
 
 									<VerticalStackLayout Grid.Column="0" VerticalOptions="Center">

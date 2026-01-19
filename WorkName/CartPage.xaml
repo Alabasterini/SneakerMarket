@@ -1,0 +1,115 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:WorkName.Models"
+             x:Class="WorkName.CartPage"
+             BackgroundColor="#F9F9F9"
+             Title="Twój Koszyk">
+
+    <Grid RowDefinitions="*, Auto">
+        <RefreshView Grid.Row="0">
+            <CollectionView x:Name="CartListView"
+                            SelectionMode="None"
+                            Margin="0,10,0,0">
+
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="1" VerticalItemSpacing="12" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:CartItems">
+                        <Border StrokeShape="RoundRectangle 12" 
+                                StrokeThickness="0" 
+                                BackgroundColor="White" 
+                                Margin="15,0,15,0"
+                                Padding="15">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                            </Border.Shadow>
+
+                            <Grid ColumnDefinitions="50, *, Auto, Auto" ColumnSpacing="10">
+
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Text="Stan" FontSize="10" TextColor="#9E9E9E" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding stan}" FontSize="14" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <Label Text="{Binding brand}" 
+                                           FontSize="10" 
+                                           TextColor="#757575" 
+                                           TextTransform="Uppercase"
+                                           LineBreakMode="TailTruncation"/>
+
+                                    <Label Text="{Binding nazwa_modelu}" 
+                                           FontSize="13" 
+                                           FontAttributes="Bold" 
+                                           TextColor="Black" 
+                                           MaxLines="1"
+                                           LineBreakMode="TailTruncation" />
+
+                                    <Label Text="{Binding kolorystyka}" 
+                                           FontSize="11" 
+                                           TextColor="#616161"
+                                           MaxLines="1"
+                                           LineBreakMode="TailTruncation"/>
+                                </VerticalStackLayout>
+
+                                <Border Grid.Column="2" 
+                                        BackgroundColor="#F5F5F5" 
+                                        StrokeShape="RoundRectangle 5" 
+                                        Padding="8,4" 
+                                        VerticalOptions="Center">
+                                    <Label Text="{Binding rozmiar}" 
+                                           FontSize="12" 
+                                           FontAttributes="Bold" 
+                                           TextColor="Black"/>
+                                </Border>
+
+                                <Label Grid.Column="3" 
+                                       Text="{Binding cena_oferowana, StringFormat='{0:F2} USD'}"
+                                       FontSize="15" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2E7D32" 
+                                       VerticalOptions="Center" 
+                                       HorizontalTextAlignment="End"/>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Border Grid.Row="1" 
+                BackgroundColor="White" 
+                StrokeThickness="0"
+                Padding="20,15,20,30"
+                StrokeShape="RoundRectangle 20,20,0,0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,-5" Radius="10" Opacity="0.1"/>
+            </Border.Shadow>
+
+            <Grid ColumnDefinitions="*, 1.5*">
+
+                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                    <Label Text="Łącznie do zapłaty:" FontSize="12" TextColor="Gray"/>
+                    <Label x:Name="TotalCartValue" 
+                           Text="0.00 USD" 
+                           FontSize="22" 
+                           FontAttributes="Bold" 
+                           TextColor="Black"/>
+                </VerticalStackLayout>
+
+                <Button Grid.Column="1" 
+                        Text="Przejdź do kasy" 
+                        Clicked="OnPayClicked" 
+                        BackgroundColor="Black" 
+                        TextColor="White" 
+                        CornerRadius="12"
+                        FontAttributes="Bold"
+                        HeightRequest="50"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentPage>
